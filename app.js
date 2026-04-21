@@ -7,23 +7,44 @@ function showPanel(id, el) {
 }
 
 // Message functionality
-function sendMessage() {
+async function sendMessage() {
     const input = document.getElementById('message-input');
     const message = input.value.trim();
     if (message) {
-        const msgThread = document.getElementById('msg-thread');
-        const newMsg = document.createElement('div');
-        newMsg.className = 'msg-row sent';
-        newMsg.innerHTML = `
-            <div class="msg-avatar">PM</div>
-            <div class="bubble-wrap">
-                <div class="bubble sent">${message}</div>
-                <div class="bubble-meta">Paula M · ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} · verified key holder</div>
-            </div>
-        `;
-        msgThread.appendChild(newMsg);
-        input.value = '';
-        msgThread.scrollTop = msgThread.scrollHeight;
+        try {
+            const response = await fetch('/api/sendMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    recipient: 'travel-pro-group', // Placeholder recipient
+                }),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                // Add message to UI
+                const msgThread = document.getElementById('msg-thread');
+                const newMsg = document.createElement('div');
+                newMsg.className = 'msg-row sent';
+                newMsg.innerHTML = `
+                    <div class="msg-avatar">PM</div>
+                    <div class="bubble-wrap">
+                        <div class="bubble sent">${message}</div>
+                        <div class="bubble-meta">Paula M · ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} · verified key holder</div>
+                    </div>
+                `;
+                msgThread.appendChild(newMsg);
+                input.value = '';
+                msgThread.scrollTop = msgThread.scrollHeight;
+            } else {
+                alert('Failed to send message securely');
+            }
+        } catch (error) {
+            alert('Error sending message: ' + error.message);
+        }
     }
 }
 

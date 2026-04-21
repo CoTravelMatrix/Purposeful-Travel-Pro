@@ -1,0 +1,25 @@
+{
+  "name": "purposeful-travel-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CoTravelMatrix/Purposeful-Travel-Pro.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CoTravelMatrix/Purposeful-Travel-Pro/issues"
+  },
+  "homepage": "https://github.com/CoTravelMatrix/Purposeful-Travel-Pro#readme"
+}
