@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purposeful Travel Pro — MVP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+ *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+ :root {
+ --black: #0a0a0a;
+ --white: #ffffff;
+ --off-white: #f8f8f6;
+ --mid-grey: #e8e8e5;
+ --dark-grey: #3a3a3a;
+ --muted: #888884;
+ --border: #d8d8d4;
+ --border-strong: #0a0a0a;
+ }
+
+ html, body {
+ height: 100%;
+ font-family: 'Nunito', sans-serif;
+ background: var(--black);
+ color: var(--black);
+ overflow: hidden;
+ }
+
+ /* APP SHELL */
+ .app-shell {
+ display: grid;
+ grid-template-rows: auto 1fr;
+ grid-template-columns: 220px 1fr;
+ height: 100vh;
+ background: var(--black);
+ }
+
+ /* TOPBAR */
+ .topbar {
+ grid-column: 1 / -1;
+ background: var(--black);
+ border-bottom: 1px solid #1a1a1a;
+ padding: 0 24px;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ height: 56px;
+ }
+
+ .logo-wordmark {
+ display: flex;
+ align-items: baseline;
+ gap: 10px;
+ }
+
+ .logo-main {
+ font-family: 'Sora', sans-serif;
+ font-weight: 800;
+ font-size: 15px;
+ letter-spacing: 1.5px;
+ text-transform: uppercase;
+ color: var(--white);
+ }
+
+ .logo-sub {
+ font-family: 'Nunito', sans-serif;
+ font-weight: 300;
+ font-size: 10px;
+ letter-spacing: 2px;
+ text-transform: uppercase;
+ color: #555;
+ }
+
+ .topbar-right {
+ display: flex;
+ align-items: center;
+ gap: 20px;
+ }
+
+ .secure-pill {
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ border: 1px solid #2a2a2a;
+ border-radius: 20px;
+ padding: 5px 12px;
+ font-family: 'Nunito', sans-serif;
+ font-size: 11px;
+ font-weight: 600;
+ letter-spacing: 0.5px;
+ color: #666;
+ }
+
+ .secure-dot {
+ width: 7px;
+ height: 7px;
+ border-radius: 50%;
+ background: #4ade80;
+ box-shadow: 0 0 6px #4ade8088;
+ }
+
+ .key-indicator {
+ display: flex;
+ align-items: center;
+ gap: 7px;
+ font-family: 'Nunito', sans-serif;
+ font-size: 11px;
+ font-weight: 600;
+ color: #ffffff;
+ background: #1a1a1a;
+ border: 1px solid #333;
+ border-radius: 20px;
+ padding: 5px 12px;
+ }
+
+ /* SIDEBAR */
+ .sidebar {
+ background: #0d0d0d;
+ border-right: 1px solid #1a1a1a;
+ padding: 24px 0;
+ display: flex;
+ flex-direction: column;
+ overflow-y: auto;
+ }
+
+ .sidebar-section-label {
+ font-family: 'Sora', sans-serif;
+ font-size: 9px;
+ font-weight: 700;
+ letter-spacing: 2px;
+ text-transform: uppercase;
+ color: #333;
+ padding: 0 20px;
+ margin-bottom: 8px;
+ margin-top: 20px;
+ }
+
+ .sidebar-section-label:first-child { margin-top: 0; }
+
+ .nav-item {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 20px;
+ font-family: 'Nunito', sans-serif;
+ font-size: 13px;
+ font-weight: 600;
+ color: #555;
+ cursor: pointer;
+ transition: all 0.15s;
+ border-left: 2px solid transparent;
+ user-select: none;
+ }
+
+ .nav-item:hover { color: #aaa; background: #111; }
+
+ .nav-item.active {
+ color: var(--white);
+ background: #111;
+ border-left: 2px solid var(--white);
+ }
+
+ .nav-icon {
+ width: 6px;
+ height: 6px;
+ border-radius: 50%;
+ background: #444;
+ flex-shrink: 0;
+ transition: background 0.15s;
+ }
+ .nav-item.active .nav-icon { background: var(--white); }
+ .nav-item:hover .nav-icon { background: #888; }
+
+ .nav-badge {
+ margin-left: auto;
+ background: #fff;
+ color: #000;
+ font-size: 9px;
+ font-weight: 800;
+ border-radius: 8px;
+ padding: 2px 6px;
+ letter-spacing: 0.3px;
+ }
+
+ .nav-badge.alert { background: #ff4444; color: #fff; }
+
+ .sidebar-footer {
+ margin-top: auto;
+ padding: 16px 20px;
+ border-top: 1px solid #1a1a1a;
+ }
+
+ .profile-chip {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .avatar-circle {
+ width: 32px;
+ height: 32px;
+ border-radius: 50%;
+ background: var(--white);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-family: 'Sora', sans-serif;
+ font-size: 11px;
+ font-weight: 700;
+ color: var(--black);
+ flex-shrink: 0;
+ }
+
+ .profile-name {
+ font-family: 'Nunito', sans-serif;
+ font-size: 12px;
+ font-weight: 700;
+ color: var(--white);
+ }
+
+ .profile-role {
+ font-family: 'Nunito', sans-serif;
+ font-size: 10px;
+ color: #444;
+ }
+
+ /* MAIN CONTENT */
+ .main {
+ background: var(--white);
+ overflow-y: auto;
+ display: flex;
+ flex-direction: column;
+ }
+
+ .panel {
+ display: none;
+ flex: 1;
+ flex-direction: column;
+ padding: 28px 32px;
+ }
+
+ .panel.active { display: flex; }
+
+ .panel-header {
+ margin-bottom: 24px;
+ padding-bottom: 20px;
+ border-bottom: 1px solid var(--border);
+ display: flex;
+ align-items: flex-start;
+ justify-content: space-between;
+ }
+
+ .panel-title {
+ font-family: 'Sora', sans-serif;
+ font-size: 22px;
+ font-weight: 800;
+ color: var(--black);
+ letter-spacing: -0.5px;
+ line-height: 1.1;
+ }
+
+ .panel-sub {
+ font-family: 'Nunito', sans-serif;
+ font-size: 12px;
+ color: var(--muted);
+ margin-top: 4px;
+ font-weight: 600;
+ letter-spacing: 0.3px;
+ }
+
+ .section-label {
+ font-family: 'Sora', sans-serif;
+ font-size: 9px;
+ font-weight: 700;
+ letter-spacing: 2px;
+ text-transform: uppercase;
+ color: #bbb;
+ margin-bottom: 12px;
+ }
+
+ /* COMMS */
+ .encrypted-bar {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ background: var(--off-white);
+ border: 1px solid var(--border);
+ border-radius: 6px;
+ padding: 8px 14px;
+ margin-bottom: 20px;
+ font-family: 'Nunito', sans-serif;
+ font-size: 11px;
+ font-weight: 700;
+ color: #555;
+ letter-spacing: 0.3px;
+ }
+
+ .msg-thread {
+ flex: 1;
+ display: flex;
+ flex-direction: column;
+ gap: 14px;
+ margin-bottom: 20px;
+ overflow-y: auto;
+ max-height: 360px;
+ padding-right: 4px;
+ }
+
+ .msg-row {
+ display: flex;
+ gap: 10px;
+ align-items: flex-start;
+ }
+
+ .msg-row.sent { flex-direction: row-reverse; }
+
+ .msg-avatar {
+ width: 34px;
+ height: 34px;
+ border-radius: 50%;
+ background: var(--black);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-family: 'Sora', sans-serif;
+ font-size: 10px;
+ font-weight: 700;
+ color: var(--white);
+ flex-shrink: 0;
+ }
+
+ .msg-row.sent .msg-avatar { background: #1a1a1a; border: 1px solid #444; }
+
+ .bubble-wrap { max-width: 68%; display: flex; flex-direction: column; }
+ .msg-row.sent .bubble-wrap { align-items: flex-end; }
+
+ .bubble {
+ background: var(--off-white);
+ border: 1px solid var(--border);
+ border-radius: 2px 12px 12px 12px;
+ padding: 10px 14px;
+ font-family: 'Nunito', sans-serif;
+ font-size: 13px;
+ line-height: 1.55;
+ color: #111;
+ }
+
+ .bubble.sent {
+ background: var(--black);
+ border-color: var(--black);
+ color: var(--white);
+ border-radius: 12px 2px 12px 12px;
+ }
+
+ .bubble-meta {
+ font-family: 'Nunito', sans-serif;
+ font-size: 10px;
+ color: #aaa;
+ margin-top: 4px;
+ padding: 0 2px;
+ }
+
+ .compose-bar {
+ display: flex;
+ gap: 10px;
+ align-items: center;
+ border: 1.5px solid var(--black);
+ border-radius: 6px;
+ padding: 10px 14px;
+ background: var(--white);
+ }
+
+ .compose-bar input {
+ flex: 1;
+ border: none;
+ outline: none;
+ font-family: 'Nunito', sans-serif;
+ font-size: 13px;
+ color: var(--black);
+ background: transparent;
+ }
+
+ .compose-bar input::placeholder { color: #bbb; }
+
+ .send-btn {
+ background: var(--black);
+ color: var(--white);
+ border: none;
+ border-radius: 4px;
+ padding: 7px 16px;
+ font-family: 'Nunito', sans-serif;
+ font-size: 12px;
+ font-weight: 700;
+ cursor: pointer;
+ letter-spacing: 0.5px;
+ }
+
+ /* MATRIX */
+ .matrix-intro {
+ background: var(--black);
+ color: var(--white);
+ border-radius: 6px;
+ padding: 16px 20px;
+ margin-bottom: 22px;
+ font-family: 'Nunito', sans-serif;
+ font-size: 13px;
+ line-height: 1.65;
+ font-style: italic;
+ }
+
+ .matrix-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 10px;
+ margin-bottom: 24px;
+ }
+
+ .matrix-cell {
+ border: 1px solid var(--border);
+ border-radius: 6px;
+ padding: 16px 14px;
+ background: var(--white);
+ transition: border-color 0.15s;
+ }
+
+ .matrix-cell:hover { border-color: var(--black); }
+
+ .matrix-cell.dark {
+ background: var(--black);
+ border-color: var(--black);
+ }
+
+ .cell-number {
+ font-family: 'Sora', sans-serif;
+ font-size: 10px;
+ font-weight: 700;
+ color: #ccc;
+ letter-spacing: 1px;
+ margin-bottom: 6px;
+ }
+
+ .matrix-cell.dark .cell-number { color: #444; }
+
+ .cell-title {
+ font-family: 'Sora', sans-serif;
+ font-size: 13px;
+ font-weight: 700;
+ color: var(--black);
+ margin-bottom: 4px;
+ }
+
+ .matrix-cell.dark .cell-title { color: var(--white); }
+
+ .cell-desc {
+ font-family: 'Nunito', sans-serif;
+ font-size: 11px;
+ color: #888;
+ line-height: 1.5;
+ }
+
+ .matrix-cell.dark .cell-desc { color: #555; }
+
+ /* REVIEWS */
+ .filter-row {
+ display: flex;
+ gap: 6px;
+ flex-wrap: wrap;
+ margin-bottom: 18px;
+ }
+
+ .filter-tag {
+ font-family: 'Nunito', sans-serif;
+ font-size: 11px;
+ font-weight: 700;
+ border: 1px solid var(--border);
+ border-radius: 20px;
+ padding: 4px 12px;
+ cursor: pointer;
+ color: #777;
+ transition: all 0.15s;
+ user-select: none;
+ letter-spacing: 0.3px;
+ }
+
+ .filter-tag:hover { border-color: #aaa; color: #333; }
+ .filter-tag.active { background: var(--black); border-color: var(--black); color: var(--white); }
+
+ .review-card {
+ border: 1px solid var(--border);
+ border-radius: 6px;
+ padding: 18px;
+ margin-bottom: 12px;
+ transition: border-color 0.15s;
+ }
+
+ .review-card:hover { border-color: #aaa; }
+
+ .review-top {
+ display: flex;
+ justify-content: space-between;
+ align-items: flex-start;
+ margin-bottom: 10px;
+ }
+
+ .review-property {
+ font-family: 'Sora', sans-serif;
+ font-size: 14px;
+ font-weight: 700;
+ color: var(--black);
+ margin-bottom: 2px;
+ }
+
+ .review-location {
+ font-family: 'Nunito', sans-serif;
+ font-size: 11px;
+ color: var(--muted);
+ font-weight: 600;
+ }
+
+ .star-row { display: flex; gap: 3px; }
+
+ .star {
+ width: 11px;
+ height: 11px;
+ background: var(--black);
+ clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+ }
+
+ .star.empty { background: #ddd; }
+
+ .review-body {
+ font-family: 'Nunito', sans-serif;
+ font-size: 13px;
+ color: #333;
+ line-height: 1.65;
+ margin-bottom: 12px;
+ }
+
+ .review-foot {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ }
+
+ .reviewer {
+ font-family: 'Nunito', sans-serif;
+ font-size: 11px;
+ color: #aaa;
+ font-weight: 600;
+ }
+
+ .keyholder-badge {
+ display: flex;
+ align-items: center;
+ gap: 5px;
+ background: var(--black);
+ color: var(--white);
+ border-radius: 4px;
+ padding: 3px 10px;
+ font-family: 'Nunito', sans-serif;
+ font-size: 10px;
+ font-weight: 700;
+ letter-spacing: 0.5px;
+ }
+
+ .ethics-note {
+ font-family: 'Nunito', sans-serif;
+ font-size: 11px;
+ color: #bbb;
+ text-align: center;
+ margin-top: 8px;
+ font-style: italic;
+ }
+
+ /* COMMONS */
+ .commons-list { display: flex; flex-direction: column; }
+
+ .commons-item {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ padding: 14px 0;
+ border-bottom: 1px solid var(--border);
+ gap: 16px;
+ }
+
+ .commons-item:last-child { border-bottom: none; }
+
+ .commons-title {
+ font-family: 'Sora', sans-serif;
+ font-size: 13px;
+ font-weight: 700;
+ color: var(--black);
+ margin-bottom: 3px;
+ }
+
+ .commons-meta {
+ font-family: 'Nunito', sans-serif;
+ font-size: 11px;
+ color: #aaa;
+ font-weight: 600;
+ }
+
+ .commons-tag {
+ font-family: 'Nunito', sans-serif;
+ font-size: 10px;
+ font-weight: 700;
+ border-radius: 4px;
+ padding: 4px 10px;
+ white-space: nowrap;
+ flex-shrink: 0;
+ letter-spacing: 0.4px;
+ }
+
+ .tag-alert { background: var(--black); color: var(--white); }
+ .tag-visa { background: var(--off-white); color: #555; border: 1px solid var(--border); }
+ .tag-dest { background: var(--off-white); color: #555; border: 1px solid var(--border); }
+ .tag-standard { background: var(--off-white); color: #555; border: 1px solid var(--border); }
+
+ /* LAYERV */
+ .nhp-hero {
+ background: var(--black);
+ border-radius: 6px;
+ padding: 24px;
+ margin-bottom: 22px;
+ color: var(--white);
+ }
+
+ .nhp-hero-title {
+ font-family: 'Sora', sans-serif;
+ font-size: 18px;
+ font-weight: 800;
+ letter-spacing: -0.3px;
+ margin-bottom: 4px;
+ }
+
+ .nhp-hero-sub {
+ font-family: 'Nunito', sans-serif;
+ font-size: 12px;
+ color: #555;
+ margin-bottom: 20px;
+ font-weight: 600;
+ letter-spacing: 0.5px;
+ }
+
+ .nhp-metric-row {
+ display: flex;
+ align-items: center;
+ gap: 12px;
+ margin-bottom: 10px;
+ }
+
+ .nhp-metric-row:last-child { margin-bottom: 0; }
+
+ .nhp-label {
+ font-family: 'Nunito', sans-serif;
+ font-size: 11px;
+ font-weight: 700;
+ color: #555;
+ width: 120px;
+ flex-shrink: 0;
+ letter-spacing: 0.3px;
+ }
+
+ .nhp-track {
+ flex: 1;
+ height: 4px;
+ background: #1a1a1a;
+ border-radius: 2px;
+ }
+
+ .nhp-fill {
+ height: 4px;
+ background: var(--white);
+ border-radius: 2px;
+ transition: width 1s ease;
+ }
+
+ .nhp-val {
+ font-family: 'Sora', sans-serif;
+ font-size: 11px;
+ font-weight: 700;
+ color: var(--white);
+ width: 50px;
+ text-align: right;
+ }
+
+ .roadmap-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 10px;
+ margin-bottom: 22px;
+ }
+
+ .roadmap-cell {
+ border: 1px solid var(--border);
+ border-radius: 6px;
+ padding: 14px;
+ }
+
+ .roadmap-cell.current {
+ background: var(--black);
+ border-color: var(--black);
+ }
+
+ .roadmap-phase {
+ font-family: 'Sora', sans-serif;
+ font-size: 9px;
+ font-weight: 700;
+ letter-spacing: 1.5px;
+ color: #bbb;
+ text-transform: uppercase;
+ margin-bottom: 6px;
+ }
+
+ .roadmap-cell.current .roadmap-phase { color: #555; }
+
+ .roadmap-title {
+ font-family: 'Sora', sans-serif;
+ font-size: 13px;
+ font-weight: 700;
+ color: var(--black);
+ margin-bottom: 4px;
+ }
+
+ .roadmap-cell.current .roadmap-title { color: var(--white); }
+
+ .roadmap-desc {
+ font-family: 'Nunito', sans-serif;
+ font-size: 11px;
+ color: #888;
+ line-height: 1.5;
+ }
+
+ .roadmap-cell.current .roadmap-desc { color: #555; }
+
+ .github-btn {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ background: var(--black);
+ color: var(--white);
+ border: none;
+ border-radius: 6px;
+ padding: 10px 18px;
+ font-family: 'Nunito', sans-serif;
+ font-size: 12px;
+ font-weight: 700;
+ cursor: pointer;
+ letter-spacing: 0.5px;
+ text-decoration: none;
+ }
+
+ .github-btn:hover { background: #222; }
+
+ .nhp-explainer {
+ font-family: 'Nunito', sans-serif;
+ font-size: 13px;
+ color: #444;
+ line-height: 1.7;
+ margin-bottom: 20px;
+ }
+
+ /* SCROLLBAR */
+ ::-webkit-scrollbar { width: 4px; height: 4px; }
+ ::-webkit-scrollbar-track { background: transparent; }
+ ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+ <!-- TOPBAR -->
+ <div class="topbar">
+ <div class="logo-wordmark">
+ <span class="logo-main">Purposeful Travel Pro</span>
+ <span class="logo-sub">Powered by LayerV · OpenNHP</span>
+ </div>
+ <div class="topbar-right">
+ <div class="secure-pill">
+ <span class="secure-dot"></span>
+ End-to-end encrypted
+ </div>
+ <div class="key-indicator">
+ Key Active — Paula Martini
+ </div>
+ </div>
+ </div>
+
+ <!-- SIDEBAR -->
+ <div class="sidebar">
+ <div class="sidebar-section-label">Community</div>
+ <div class="nav-item active" onclick="showPanel('comms', this)">
+ <span class="nav-icon"></span> Secure Comms
+ <span class="nav-badge">4</span>
+ </div>
+ <div class="nav-item" onclick="showPanel('matrix', this)">
+ <span class="nav-icon"></span> The Matrix
+ </div>
+
+ <div class="sidebar-section-label">Intelligence</div>
+ <div class="nav-item" onclick="showPanel('reviews', this)">
+ <span class="nav-icon"></span> Reviews & Map
+ </div>
+ <div class="nav-item" onclick="showPanel('commons', this)">
+ <span class="nav-icon"></span> Knowledge Commons
+ <span class="nav-badge alert">2</span>
+ </div>
+
+ <div class="sidebar-section-label">Infrastructure</div>
+ <div class="nav-item" onclick="showPanel('layerv', this)">
+ <span class="nav-icon"></span> LayerV / NHP
+ </div>
+
+ <div class="sidebar-footer">
+ <div class="profile-chip">
+ <div class="avatar-circle">PM</div>
+ <div>
+ <div class="profile-name">Paula Martini</div>
+ <div class="profile-role">Founder · CoTravel · Key Holder</div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- MAIN -->
+ <div class="main">
+
+ <!-- COMMS PANEL -->
+ <div id="panel-comms" class="panel active">
+ <div class="panel-header">
+ <div>
+ <div class="panel-title">Secure Communications</div>
+ <div class="panel-sub">Founding Members Channel · 14 members · LayerV NHP · No exposed endpoints</div>
+ </div>
+ </div>
+
+ <div class="encrypted-bar">
+ All messages encrypted in transit and at rest · No third-party data harvesting · Backend removed from public web
+ </div>
+
+ <div class="section-label">Live thread</div>
+
+ <div class="msg-thread">
+ <div class="msg-row">
+ <div class="msg-avatar">RM</div>
+ <div class="bubble-wrap">
+ <div class="bubble">Just back from Mantis Boulders. They've completely restructured their sustainability operations — solar, greywater, genuine community employment. First-hand. Worth the send. </div>
+ <div class="bubble-meta">Rachel M · 09:14 · verified key holder</div>
+ </div>
+ </div>
+ <div class="msg-row">
+ <div class="msg-avatar">TK</div>
+ <div class="bubble-wrap">
+ <div class="bubble">Quick alert — carrier on the Cape Town route is showing booking irregularities. Flagging before it hits the GDS. Clients mid-booking should hold.</div>
+ <div class="bubble-meta">Tom K · 09:21 · verified key holder</div>
+ </div>
+ </div>
+ <div class="msg-row sent">
+ <div class="msg-avatar">PM</div>
+ <div class="bubble-wrap">
+ <div class="bubble sent">Thanks Tom — adding to the Commons now. Rachel, can you post the Mantis review to the Map? This is exactly what the community needs.</div>
+ <div class="bubble-meta">Paula M · 09:26 · verified key holder</div>
+ </div>
+ </div>
+ <div class="msg-row">
+ <div class="msg-avatar">SN</div>
+ <div class="bubble-wrap">
+ <div class="bubble">Kenya e-Visa portal is down again — third time this month. Alternative routing via e-Citizen direct portal is working. Sharing the workaround in the Commons now.</div>
+ <div class="bubble-meta">Siya N · 09:31 · verified key holder</div>
+ </div>
+ </div>
+ <div class="msg-row">
+ <div class="msg-avatar">KV</div>
+ <div class="bubble-wrap">
+ <div class="bubble">Botswana update: Chitabe access road seriously degraded. Low-clearance vehicles struggling. Worth managing client expectations explicitly before departure.</div>
+ <div class="bubble-meta">Kobus V · 09:44 · verified key holder</div>
+ </div>
+ </div>
+ </div>
+
+ <div class="compose-bar">
+ <input type="text" placeholder="Send a secure message to the founding members…" />
+ <button class="send-btn">Send</button>
+ </div>
+ </div>
+
+ <!-- MATRIX PANEL -->
+ <div id="panel-matrix" class="panel">
+ <div class="panel-header">
+ <div>
+ <div class="panel-title">The Travel Matrix</div>
+ <div class="panel-sub">The intelligence framework powering every decision on the platform</div>
+ </div>
+ </div>
+
+ <div class="matrix-intro">
+ "Air traffic controllers do not compete with each other for the same aircraft. They share intelligence in real time. They hold common standards. They operate within a system designed to protect the people in the air and the people on the ground simultaneously. That is Purposeful Travel Pro."
+ <br><br><span style="font-style:normal;font-weight:700;font-size:11px;letter-spacing:1px;color:#555;">— PAULA MARTINI, TRAVEL WITH PURPOSE</span>
+ </div>
+
+ <div class="section-label">The nine dimensions</div>
+
+ <div class="matrix-grid">
+ <div class="matrix-cell dark">
+ <div class="cell-number">01</div>
+ <div class="cell-title">The Traveller</div>
+ <div class="cell-desc">Conscious. Data-aware. Purposeful in every choice they make.</div>
+ </div>
+ <div class="matrix-cell">
+ <div class="cell-number">02</div>
+ <div class="cell-title">The Destination</div>
+ <div class="cell-desc">A living community — not a content category or a search result.</div>
+ </div>
+ <div class="matrix-cell">
+ <div class="cell-number">03</div>
+ <div class="cell-title">The Pro</div>
+ <div class="cell-desc">Accountable human expert. Irreplaceable. Not an algorithm.</div>
+ </div>
+ <div class="matrix-cell">
+ <div class="cell-number">04</div>
+ <div class="cell-title">People</div>
+ <div class="cell-desc">Cultural heritage preserved. Local livelihoods protected long after the tourists leave.</div>
+ </div>
+ <div class="matrix-cell dark">
+ <div class="cell-number">05</div>
+ <div class="cell-title">Planet</div>
+ <div class="cell-desc">Carrying capacity. No greenwashing. Honest conversations about ecological cost.</div>
+ </div>
+ <div class="matrix-cell">
+ <div class="cell-number">06</div>
+ <div class="cell-title">Economy</div>
+ <div class="cell-desc">Value stays in-destination. Not pooled at the top of a global platform.</div>
+ </div>
+ <div class="matrix-cell">
+ <div class="cell-number">07</div>
+ <div class="cell-title">Data Ethics</div>
+ <div class="cell-desc">No personal traveller data. Ever. Enshrined in the membership code.</div>
+ </div>
+ <div class="matrix-cell">
+ <div class="cell-number">08</div>
+ <div class="cell-title">The Commons</div>
+ <div class="cell-desc">Shared intelligence. Curated. Verified. Protected from the open web.</div>
+ </div>
+ <div class="matrix-cell dark">
+ <div class="cell-number">09</div>
+ <div class="cell-title">The Key</div>
+ <div class="cell-desc">Earned, not purchased. Standards-led. The key is the solution to access without accountability.</div>
+ </div>
+ </div>
+ </div>
+
+ <!-- REVIEWS PANEL -->
+ <div id="panel-reviews" class="panel">
+ <div class="panel-header">
+ <div>
+ <div class="panel-title">Supplier & Property Reviews</div>
+ <div class="panel-sub">Verified professionals only · Substantive assessments · No personal traveller data · Ever</div>
+ </div>
+ </div>
+
+ <div class="filter-row">
+ <div class="filter-tag active">All</div>
+ <div class="filter-tag">Lodges</div>
+ <div class="filter-tag">Airlines</div>
+ <div class="filter-tag">DMCs</div>
+ <div class="filter-tag">Visa & Entry</div>
+ <div class="filter-tag">Experiences</div>
+ <div class="filter-tag">Ground Handlers</div>
+ </div>
+
+ <div class="review-card">
+ <div class="review-top">
+ <div>
+ <div class="review-property">Mantis Boulders — South Africa</div>
+ <div class="review-location">Conservation Lodge · Luxury · Overberg Region</div>
+ </div>
+ <div class="star-row">
+ <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+ </div>
+ </div>
+ <div class="review-body">Complete restructure of sustainability operations since last assessment — solar, greywater recycling, and a genuine community employment model. This is not a logo on a brochure. The kitchen sources within 20km. Guide quality exceptional. A confident send.</div>
+ <div class="review-foot">
+ <div class="reviewer">Rachel M · Verified Pro · First-hand visit · April 2026</div>
+ <div class="keyholder-badge">KEY HOLDER</div>
+ </div>
+ </div>
+
+ <div class="review-card">
+ <div class="review-top">
+ <div>
+ <div class="review-property">Wilderness Safaris — Botswana</div>
+ <div class="review-location">Conservation Safari · Luxury · Okavango Delta</div>
+ </div>
+ <div class="star-row">
+ <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star empty"></div>
+ </div>
+ </div>
+ <div class="review-body">Guide quality remains exceptional — among the best in the Delta. One material concern: Chitabe access road is significantly degraded and affecting low-clearance vehicle transfers. Worth managing client expectations explicitly before departure. Not a dealbreaker but a conversation.</div>
+ <div class="review-foot">
+ <div class="reviewer">Kobus V · Verified Pro · First-hand visit · March 2026</div>
+ <div class="keyholder-badge">KEY HOLDER</div>
+ </div>
+ </div>
+
+ <div class="review-card">
+ <div class="review-top">
+ <div>
+ <div class="review-property">Singita Lodges — Tanzania</div>
+ <div class="review-location">Conservation · Ultra-Luxury · Serengeti</div>
+ </div>
+ <div class="star-row">
+ <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+ </div>
+ </div>
+ <div class="review-body">The conservation levy model is genuinely working — verifiable community outcomes, transparent reporting. Singita Grumeti specifically worth noting for the river crossing proximity. Pricing has increased significantly post-COVID but the product justifies it for the right client profile.</div>
+ <div class="review-foot">
+ <div class="reviewer">Amara O · Verified Pro · First-hand visit · Feb 2026</div>
+ <div class="keyholder-badge">KEY HOLDER</div>
+ </div>
+ </div>
+
+ <div class="ethics-note">Not star ratings. Substantive professional assessments. No traveller personal data permitted on this platform under any circumstances.</div>
+ </div>
+
+ <!-- COMMONS PANEL -->
+ <div id="panel-commons" class="panel">
+ <div class="panel-header">
+ <div>
+ <div class="panel-title">Knowledge Commons</div>
+ <div class="panel-sub">Curated · Verified · Protected · Key holders only</div>
+ </div>
+ </div>
+
+ <div class="section-label">Live alerts</div>
+ <div class="commons-list" style="margin-bottom:24px;">
+ <div class="commons-item">
+ <div>
+ <div class="commons-title">Kenya e-Visa portal workaround — active</div>
+ <div class="commons-meta">Siya N · Posted 09:32 today · Verified by 3 members</div>
+ </div>
+ <div class="commons-tag tag-alert">ALERT</div>
+ </div>
+ <div class="commons-item">
+ <div>
+ <div class="commons-title">Cape Town route — carrier booking irregularities</div>
+ <div class="commons-meta">Tom K · Posted 09:22 today · Under monitoring</div>
+ </div>
+ <div class="commons-tag tag-alert">ALERT</div>
+ </div>
+ </div>
+
+ <div class="section-label">Intelligence library</div>
+ <div class="commons-list">
+ <div class="commons-item">
+ <div>
+ <div class="commons-title">EU Entry Requirements Update — Q2 2026</div>
+ <div class="commons-meta">Paula M · Updated 18 Apr 2026 · ETA system changes included</div>
+ </div>
+ <div class="commons-tag tag-visa">Visa & Entry</div>
+ </div>
+ <div class="commons-item">
+ <div>
+ <div class="commons-title">Bali Groundwater Crisis — Carrying Capacity Brief</div>
+ <div class="commons-meta">Community Research · March 2026 · Peer reviewed</div>
+ </div>
+ <div class="commons-tag tag-dest">Destination</div>
+ </div>
+ <div class="commons-item">
+ <div>
+ <div class="commons-title">Venice Resident Resistance — Update for Client Briefings</div>
+ <div class="commons-meta">Community Research · Feb 2026 · 35M arrival trajectory</div>
+ </div>
+ <div class="commons-tag tag-dest">Destination</div>
+ </div>
+ <div class="commons-item">
+ <div>
+ <div class="commons-title">Purposeful Travel Pro — Code of Ethics v1.0</div>
+ <div class="commons-meta">Travel with Purpose · Founding Document · Governing all members</div>
+ </div>
+ <div class="commons-tag tag-standard">Standards</div>
+ </div>
+ <div class="commons-item">
+ <div>
+ <div class="commons-title">Traveller Data Protection Protocol — HIPAA Equivalent Framework</div>
+ <div class="commons-meta">Travel with Purpose · LayerV · Enforced architecturally</div>
+ </div>
+ <div class="commons-tag tag-standard">Standards</div>
+ </div>
+ </div>
+ </div>
+
+ <!-- LAYERV PANEL -->
+ <div id="panel-layerv" class="panel">
+ <div class="panel-header">
+ <div>
+ <div class="panel-title">LayerV Infrastructure</div>
+ <div class="panel-sub">OpenNHP · Network Hiding Protocol · Zero exposed endpoints · Open source on GitHub</div>
+ </div>
+ </div>
+
+ <div class="nhp-hero">
+ <div class="nhp-hero-title">Network Invisibility by Architecture</div>
+ <div class="nhp-hero-sub">Not security as an afterthought. Security as the foundation.</div>
+ <div class="nhp-metric-row">
+ <div class="nhp-label">Attack surface</div>
+ <div class="nhp-track"><div class="nhp-fill" style="width:3%;"></div></div>
+ <div class="nhp-val">~Zero</div>
+ </div>
+ <div class="nhp-metric-row">
+ <div class="nhp-label">Backend visible</div>
+ <div class="nhp-track"><div class="nhp-fill" style="width:0%;"></div></div>
+ <div class="nhp-val">None</div>
+ </div>
+ <div class="nhp-metric-row">
+ <div class="nhp-label">End-to-end encryption</div>
+ <div class="nhp-track"><div class="nhp-fill" style="width:100%;"></div></div>
+ <div class="nhp-val">100%</div>
+ </div>
+ <div class="nhp-metric-row">
+ <div class="nhp-label">Access control</div>
+ <div class="nhp-track"><div class="nhp-fill" style="width:100%;"></div></div>
+ <div class="nhp-val">Keyed</div>
+ </div>
+ <div class="nhp-metric-row">
+ <div class="nhp-label">Third-party harvest</div>
+ <div class="nhp-track"><div class="nhp-fill" style="width:0%;"></div></div>
+ <div class="nhp-val">Zero</div>
+ </div>
+ </div>
+
+ <div class="nhp-explainer">
+ OpenNHP (Network Hiding Protocol) removes backend systems from the public internet entirely. There are no visible endpoints to probe, scan, or attack. The Purposeful Travel Pro key is both a professional credential and a cryptographic infrastructure access token — earned through demonstrated alignment with the code of ethics, not purchased. This is the security standard the travel industry never built, now built.
+ </div>
+
+ <div class="section-label" style="margin-bottom:12px;">Roadmap to launch</div>
+
+ <div class="roadmap-grid">
+ <div class="roadmap-cell">
+ <div class="roadmap-phase">Phase 1 · Partnership</div>
+ <div class="roadmap-title">LayerV Agreement</div>
+ <div class="roadmap-desc">CoTravel as proof-of-concept deployment. Co-branded partnership formalised.</div>
+ </div>
+ <div class="roadmap-cell">
+ <div class="roadmap-phase">Phase 2 · Standards</div>
+ <div class="roadmap-title">Ethics Framework</div>
+ <div class="roadmap-desc">Code of ethics, the key standard, and data protection protocol established.</div>
+ </div>
+ <div class="roadmap-cell current">
+ <div class="roadmap-phase">Phase 3 · Now</div>
+ <div class="roadmap-title">Founding Members</div>
+ <div class="roadmap-desc">Curated cohort. Platform testing. The advocacy voice for public launch.</div>
+ </div>
+ <div class="roadmap-cell">
+ <div class="roadmap-phase">Phase 4 · Build</div>
+ <div class="roadmap-title">Platform Build</div>
+ <div class="roadmap-desc">Comms, the Map, supplier reviews, Knowledge Commons — on LayerV.</div>
+ </div>
+ <div class="roadmap-cell">
+ <div class="roadmap-phase">Phase 5 · Launch</div>
+ <div class="roadmap-title">Public Launch</div>
+ <div class="roadmap-desc">Media coverage via Travel with Purpose thought leadership platform.</div>
+ </div>
+ <div class="roadmap-cell">
+ <div class="roadmap-phase">Phase 7 · Governance</div>
+ <div class="roadmap-title">NPO Formation</div>
+ <div class="roadmap-desc">Travel with Purpose registered as NPO. Industry advocacy mandate formalised.</div>
+ </div>
+ </div>
+
+ <a class="github-btn" href="https://github.com/OpenNHP/opennhp" target="_blank">
+ View OpenNHP on GitHub &nbsp;
+ </a>
+ </div>
+
+ </div><!-- /main -->
+</div><!-- /app-shell -->
+
+<script>
+ function showPanel(id, el) {
+ document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+ document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+ document.getElementById('panel-' + id).classList.add('active');
+ el.classList.add('active');
+ }
+</script>
+
+</body>
+</html>
